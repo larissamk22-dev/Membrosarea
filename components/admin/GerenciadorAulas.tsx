@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Trash2, Pencil, Eye, EyeOff } from 'lucide-react';
 import { duracao } from '@/lib/formato';
+import { EscolherDoPanda } from './EscolherDoPanda';
 import type { Aula, Modulo } from '@/lib/tipos';
 
 const vazia = {
@@ -235,23 +236,38 @@ function Formulario({
         />
       </div>
       <div>
-        <label className="etiqueta mb-1.5 block">Link do player (Panda Video)</label>
-        <input
-          className="campo"
-          placeholder="cole aqui o link que o Panda gerou"
-          value={f.video_url}
-          onChange={(e) => set('video_url', e.target.value)}
+        <label className="etiqueta mb-1.5 block">Vídeo</label>
+        <EscolherDoPanda
+          aoEscolher={(e) =>
+            setF((p) => ({
+              ...p,
+              video_url: e.video_url,
+              thumbnail_url: e.thumbnail_url,
+              duracao_minutos: e.duracao_minutos || p.duracao_minutos,
+              // Só usa o nome do arquivo do Panda se você ainda não deu um título.
+              titulo: p.titulo || e.titulo,
+            }))
+          }
         />
-        <p className="mt-1.5 text-xs" style={{ color: 'var(--texto-fraco)' }}>
-          Copie do Panda, no botão de incorporar. Não monte o endereço na mão a partir do id do
-          vídeo — o player usa outro identificador.
+        <p className="mt-2 text-xs" style={{ color: 'var(--texto-fraco)' }}>
+          Escolhendo da biblioteca, o sistema preenche o player, a capa e a duração sozinho — e
+          pega o link certo, que não é o que se monta a partir do id do vídeo.
         </p>
       </div>
       <div>
-        <label className="etiqueta mb-1.5 block">Imagem de capa (opcional)</label>
+        <label className="etiqueta mb-1.5 block">Link do player</label>
         <input
           className="campo"
-          placeholder="link da thumbnail"
+          placeholder="preenchido ao escolher da biblioteca, ou cole aqui"
+          value={f.video_url}
+          onChange={(e) => set('video_url', e.target.value)}
+        />
+      </div>
+      <div>
+        <label className="etiqueta mb-1.5 block">Imagem de capa</label>
+        <input
+          className="campo"
+          placeholder="preenchida ao escolher da biblioteca"
           value={f.thumbnail_url}
           onChange={(e) => set('thumbnail_url', e.target.value)}
         />
