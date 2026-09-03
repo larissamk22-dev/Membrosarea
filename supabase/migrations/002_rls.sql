@@ -49,9 +49,34 @@ create policy "aluna atualiza a propria linha"
   with check (user_id = auth.uid());
 
 -- ...mas ela NÃO pode mexer no que define o acesso dela.
--- Tirar o privilégio na coluna é mais seguro do que confiar na tela:
--- mesmo com a policy de update acima, estas duas colunas ficam fora.
-revoke update (status, modulo_atual) on public.alunas from authenticated;
+--
+-- Aqui mora uma pegadinha do Postgres que custa caro. O caminho que parece
+-- óbvio é revogar só as duas colunas:
+--
+--     revoke update (status, modulo_atual) on public.alunas from authenticated;
+--
+-- Isso NÃO FUNCIONA. Quando o papel já tem update sobre a TABELA INTEIRA — e
+-- é assim que o Supabase cria toda tabela nova — revogar coluna solta não faz
+-- efeito nenhum: o banco emite um aviso e segue a vida. A trava fica só na
+-- sua cabeça, e a aluna consegue escrever modulo_atual = 12 na própria linha,
+-- destravando o curso inteiro pela API.
+--
+-- O jeito que funciona é o mesmo que a migration 004 usa com o video_url:
+-- primeiro tira o direito da tabela toda, depois devolve coluna por coluna.
+revoke update on public.alunas from authenticated;
+
+-- Só o nome volta. Repare no que ficou de fora, e por quê:
+--   status, modulo_atual -> definem o acesso dela; quem mexe é você, no painel
+--   id, user_id          -> identidade da linha, ninguém reescreve
+--   created_at           -> histórico
+--   email                -> o login de verdade mora no auth do Supabase.
+--                           Deixar editar só esta cópia desencontraria as duas.
+grant update (nome) on public.alunas to authenticated;
+
+-- Conferindo (esta consulta tem que responder false, false, true):
+--   select has_column_privilege('authenticated','public.alunas','modulo_atual','UPDATE'),
+--          has_column_privilege('authenticated','public.alunas','status','UPDATE'),
+--          has_column_privilege('authenticated','public.alunas','nome','UPDATE');
 
 drop policy if exists "admin gerencia alunas" on public.alunas;
 create policy "admin gerencia alunas"

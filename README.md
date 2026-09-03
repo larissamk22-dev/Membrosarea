@@ -300,6 +300,14 @@ O link do vídeo tem uma trava a mais, em `004_link_do_video.sql`: a coluna
 `video_url` é invisível para o navegador. Quem lê é o servidor, e só depois de
 conferir que a aula está liberada.
 
+E tem uma pegadinha do Postgres que vale guardar, porque ela engana: **revogar
+uma coluna solta não funciona se o papel já tem o direito sobre a tabela
+inteira** — e é assim que o Supabase cria toda tabela nova. O banco emite um
+aviso e não revoga nada. Para travar coluna de verdade, o caminho é sempre o
+mesmo: `revoke` na tabela toda, depois `grant` coluna por coluna, deixando de
+fora a que você quer esconder. É o que a `004` faz com `video_url` e o que a
+`002` faz com `status` e `modulo_atual`.
+
 ---
 
 ## Mapa dos arquivos
@@ -327,6 +335,10 @@ app/globals.css          ← a sua marca mora nas primeiras 15 linhas
 
 - [ ] RLS ligada em **todas** as tabelas (o Supabase avisa na lista de tabelas)
 - [ ] Nenhuma policy com `using (true)` onde deveria ter condição
+- [ ] A aluna não escreve nas colunas que definem o acesso dela. Rode no SQL
+      Editor e espere `false, false`:
+      `select has_column_privilege('authenticated','public.alunas','modulo_atual','UPDATE'),
+              has_column_privilege('authenticated','public.alunas','status','UPDATE');`
 - [ ] A `service_role` não aparece em nenhum arquivo com `'use client'`
 - [ ] Logada como aluna, tentar abrir `/admin/aulas` na barra de endereço → barra
 - [ ] Deslogada, tentar abrir `/aulas` → cai no login
@@ -338,5 +350,7 @@ Ou peça a auditoria ao Claude Code:
 > Confira: toda tabela com RLS; nenhuma policy com `using (true)` indevido;
 > a service_role fora de arquivos de cliente; toda página de `/admin`
 > conferindo o papel no servidor; nenhum caminho para alguém se tornar admin
-> sozinho; e a coluna `video_url` fora do grant de select. Mostre arquivo,
-> linha e correção, mas não corrija ainda.
+> sozinho; a coluna `video_url` fora do grant de select; e nenhuma coluna que
+> define acesso (`status`, `modulo_atual`) gravável pela aluna — lembrando que
+> revoke de coluna não faz efeito se o grant existe na tabela inteira. Mostre
+> arquivo, linha e correção, mas não corrija ainda.
