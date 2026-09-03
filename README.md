@@ -114,6 +114,35 @@ Entre em `localhost:3000` e você cai no painel.
 
 ---
 
+## De onde vem o vídeo da aula
+
+Você publica a aula **no painel**, não no código. O campo do vídeo aceita o
+link de onde a sua aula estiver:
+
+| Onde a aula está | O que colar | Proteção |
+|---|---|---|
+| **Panda Video** | Escolha da biblioteca, ou cole o link do player | Boa: player próprio, dificulta download |
+| **YouTube não listado** | O link normal (`watch?v=...`) | **Nenhuma:** quem tiver o link assiste sem passar pelo seu login |
+| **Vimeo** | O link do vídeo | Depende das permissões que você configurar lá |
+| **Google Drive** | O link de compartilhar | **Nenhuma**, e o arquivo precisa estar como "qualquer pessoa com o link" |
+| **Loom** | O link de compartilhar | **Nenhuma** |
+
+Você cola o endereço que copiou da barra do navegador e o painel faz o
+resto: identifica de onde é, converte para o formato que o player entende,
+avisa quando a hospedagem não protege o conteúdo, e tem um botão
+**"testar aqui"** para você ver o vídeo rodando antes de publicar.
+
+> **Por que a conversão importa:** o link que aparece na barra do navegador
+> quase nunca é o link de *incorporar*. Colar o endereço da página do
+> YouTube ou o link `/view` do Drive dá tela preta. O painel converte
+> sozinho — mas vale saber que é isso que está acontecendo.
+
+**A recomendação honesta:** comece com o que você já tem. Se as aulas estão
+no Drive, use o Drive e coloque o curso no ar hoje. Quando o produto estiver
+vendendo, migre para o Panda — o campo é o mesmo, você só troca o link.
+
+---
+
 ## Passo 6 · Conectar o Panda Video (opcional)
 
 O sistema funciona sem isso: você pode colar o link de qualquer player no

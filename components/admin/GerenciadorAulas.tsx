@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Trash2, Pencil, Eye, EyeOff } from 'lucide-react';
 import { duracao } from '@/lib/formato';
-import { EscolherDoPanda } from './EscolherDoPanda';
+import { CampoVideo } from './CampoVideo';
 import type { Aula, Modulo } from '@/lib/tipos';
 
 const vazia = {
@@ -235,39 +235,25 @@ function Formulario({
           onChange={(e) => set('descricao', e.target.value)}
         />
       </div>
-      <div>
-        <label className="etiqueta mb-1.5 block">Vídeo</label>
-        <EscolherDoPanda
-          aoEscolher={(e) =>
-            setF((p) => ({
-              ...p,
-              video_url: e.video_url,
-              thumbnail_url: e.thumbnail_url,
-              duracao_minutos: e.duracao_minutos || p.duracao_minutos,
-              // Só usa o nome do arquivo do Panda se você ainda não deu um título.
-              titulo: p.titulo || e.titulo,
-            }))
-          }
-        />
-        <p className="mt-2 text-xs" style={{ color: 'var(--texto-fraco)' }}>
-          Escolhendo da biblioteca, o sistema preenche o player, a capa e a duração sozinho — e
-          pega o link certo, que não é o que se monta a partir do id do vídeo.
-        </p>
-      </div>
-      <div>
-        <label className="etiqueta mb-1.5 block">Link do player</label>
-        <input
-          className="campo"
-          placeholder="preenchido ao escolher da biblioteca, ou cole aqui"
-          value={f.video_url}
-          onChange={(e) => set('video_url', e.target.value)}
-        />
-      </div>
+      <CampoVideo
+        valor={f.video_url}
+        aoMudar={(v) => set('video_url', v)}
+        aoEscolherDoPanda={(e) =>
+          setF((p) => ({
+            ...p,
+            video_url: e.video_url,
+            thumbnail_url: e.thumbnail_url,
+            duracao_minutos: e.duracao_minutos || p.duracao_minutos,
+            // Só usa o nome do arquivo do Panda se você ainda não deu um título.
+            titulo: p.titulo || e.titulo,
+          }))
+        }
+      />
       <div>
         <label className="etiqueta mb-1.5 block">Imagem de capa</label>
         <input
           className="campo"
-          placeholder="preenchida ao escolher da biblioteca"
+          placeholder="opcional — o Panda preenche sozinho; nas outras fontes, cole o link de uma imagem"
           value={f.thumbnail_url}
           onChange={(e) => set('thumbnail_url', e.target.value)}
         />

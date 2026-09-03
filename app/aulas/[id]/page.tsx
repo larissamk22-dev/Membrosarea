@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Topbar } from '@/components/Topbar';
 import { BotaoConcluir } from '@/components/BotaoConcluir';
 import { duracao } from '@/lib/formato';
+import { normalizarVideo } from '@/lib/video';
 import type { Aula } from '@/lib/tipos';
 
 export const dynamic = 'force-dynamic';
@@ -41,8 +42,11 @@ export default async function AulaPage({ params }: { params: { id: string } }) {
   //    escondido o card na tela anterior: a barra de endereço é editável.
   if (!aula.liberado) redirect('/aulas');
 
-  // 3. Só agora o link do vídeo.
-  const video = await linkDoVideo(aula.id);
+  // 3. Só agora o link do vídeo. Passa pela normalização para funcionar
+  //    com vídeo de qualquer fonte — se alguém salvou o endereço da página
+  //    do YouTube em vez do link de incorporar, converte aqui.
+  const bruto = await linkDoVideo(aula.id);
+  const video = bruto ? normalizarVideo(bruto).embed : null;
 
   // Aulas vizinhas, para o "anterior / próxima"
   const { data: irmas } = await supabase
