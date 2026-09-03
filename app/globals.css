@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================================
+   A SUA MARCA MORA AQUI.
+   Troque estes valores e o sistema inteiro muda de cara. Não precisa
+   mexer em mais nenhum arquivo.
+   ===================================================================== */
+:root {
+  --fundo: #131110;          /* fundo da página */
+  --superficie: #1D1A18;     /* cards */
+  --superficie-2: #272320;   /* cards em destaque, cabeçalhos */
+  --texto: #F5F0EA;
+  --texto-suave: #B7ADA4;
+  --texto-fraco: #7C736C;
+  --linha: rgba(245, 240, 234, 0.10);
+  --acento: #E5A54B;         /* a cor da marca: botões, destaques */
+  --acento-escuro: #C4842E;
+  --feito: #6FA86B;          /* "aula concluída" — cor de significado, não de marca */
+  --fonte-display: 'Bricolage Grotesque';
+  --fonte-corpo: 'Inter';
+}
+
+body {
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte-corpo), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  /* Cartão base */
+  .cartao {
+    @apply rounded-2xl border bg-superficie;
+    border-color: var(--linha);
+  }
+
+  /* Etiqueta pequena em caixa alta */
+  .etiqueta {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em];
+    color: var(--texto-fraco);
+  }
+
+  /* Selo sobre a miniatura (duração, estado) */
+  .selo {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium;
+    background: rgba(19, 17, 16, 0.82);
+    backdrop-filter: blur(6px);
+    color: var(--texto);
+  }
+
+  .botao {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5
+           text-sm font-semibold transition disabled:opacity-50;
+    background: var(--acento);
+    color: #1A1206;
+  }
+  .botao:hover:not(:disabled) { background: var(--acento-escuro); }
+
+  .botao-fantasma {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border px-5 py-2.5
+           text-sm font-semibold transition disabled:opacity-50;
+    border-color: var(--linha);
+    color: var(--texto);
+  }
+  .botao-fantasma:hover:not(:disabled) { background: var(--superficie-2); }
+
+  .campo {
+    @apply w-full rounded-xl border bg-transparent px-4 py-3 text-sm outline-none transition;
+    border-color: var(--linha);
+    color: var(--texto);
+  }
+  .campo:focus { border-color: var(--acento); }
+  .campo::placeholder { color: var(--texto-fraco); }
+}
+
+/* Acessibilidade: foco sempre visível */
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
