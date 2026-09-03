@@ -7,7 +7,7 @@ import { CardAula } from '@/components/CardAula';
 import { Miniatura } from '@/components/Miniatura';
 import { BarraProgresso } from '@/components/BarraProgresso';
 import { duracao } from '@/lib/formato';
-import type { Aula, Modulo } from '@/lib/tipos';
+import { COLUNAS_AULA, type Aula, type Modulo } from '@/lib/tipos';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +19,7 @@ export default async function AulasPage() {
   // quem faz isso é a RLS, lá no banco. Se a aluna não pode ver, não vem.
   const [{ data: modulos }, { data: aulas }, { data: progresso }] = await Promise.all([
     supabase.from('modulos').select('*').order('numero'),
-    supabase.from('aulas').select('*').order('ordem'),
+    supabase.from('aulas').select(COLUNAS_AULA).order('ordem'),
     supabase.from('progresso').select('aula_id, concluida').eq('aluna_id', aluna.id),
   ]);
 

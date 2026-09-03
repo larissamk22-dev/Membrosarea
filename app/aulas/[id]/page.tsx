@@ -8,7 +8,7 @@ import { Topbar } from '@/components/Topbar';
 import { BotaoConcluir } from '@/components/BotaoConcluir';
 import { duracao } from '@/lib/formato';
 import { normalizarVideo } from '@/lib/video';
-import type { Aula } from '@/lib/tipos';
+import { COLUNAS_AULA, type Aula } from '@/lib/tipos';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,7 +35,11 @@ export default async function AulaPage({ params }: { params: { id: string } }) {
 
   // 1. A RLS já barra aula de módulo que não abriu para ela: se não vier
   //    nada, é porque ela não tem acesso — não porque a aula não existe.
-  const { data: aula } = await supabase.from('aulas').select('*').eq('id', params.id).maybeSingle();
+  const { data: aula } = await supabase
+    .from('aulas')
+    .select(COLUNAS_AULA)
+    .eq('id', params.id)
+    .maybeSingle();
   if (!aula) redirect('/aulas');
 
   // 2. Confere o cadeado AQUI TAMBÉM, no servidor. Nunca confie em ter
@@ -51,7 +55,7 @@ export default async function AulaPage({ params }: { params: { id: string } }) {
   // Aulas vizinhas, para o "anterior / próxima"
   const { data: irmas } = await supabase
     .from('aulas')
-    .select('*')
+    .select(COLUNAS_AULA)
     .eq('modulo_id', aula.modulo_id)
     .order('ordem');
   const lista = ((irmas ?? []) as Aula[]).filter((a) => a.liberado);
