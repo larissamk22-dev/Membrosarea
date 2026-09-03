@@ -45,6 +45,11 @@ export function senhaTemporaria() {
  * (migration 004) — inclusive para você. O painel lê pelo servidor, com a
  * chave de serviço, depois de a página já ter conferido que você é admin.
  */
+export function faltaChaveDeServico() {
+  const k = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  return !k || k.trim() === '' || k.includes('COLE');
+}
+
 export async function servicoDoAdmin() {
   const { exigirAdmin } = await import('./auth');
   await exigirAdmin();
