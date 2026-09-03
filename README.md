@@ -23,7 +23,8 @@ Feito nas aulas do **Clube Divos da IA**.
 
 ## Passo 0 · O prompt que conduz tudo
 
-Crie uma pasta nova e vazia, abra o Claude Code dentro dela e cole o prompt
+Crie uma pasta nova e vazia (botão direito na área de trabalho → Nova pasta),
+abra ela no seu editor e, com o Claude Code aberto ali dentro, cole o prompt
 abaixo. Ele faz o Claude te guiar passo a passo, esperando você a cada etapa —
 em vez de sair fazendo tudo sozinho e te deixar sem entender o que aconteceu.
 
@@ -32,26 +33,39 @@ Você é meu copiloto para montar a minha área de membros. Eu não programo, e
 quero entender o que está acontecendo em cada etapa.
 
 COMO VOCÊ DEVE ME CONDUZIR:
-- Português simples, sem jargão. Se precisar usar um termo técnico, explique
-  ele na mesma frase.
+- Fale em português simples. Se precisar usar um termo técnico, explique ele
+  na mesma frase.
 - UM passo por vez. Depois de cada passo, PARE e espere eu dizer "próximo".
   Nunca emende dois passos.
-- Antes de cada comando, diga em uma frase o que ele faz e por quê.
-- Quando o passo for fora do terminal (criar conta, clicar em algo no painel
-  do Supabase, copiar uma chave), me diga exatamente onde clicar e espere eu
-  confirmar que fiz.
+- VOCÊ executa os comandos por mim. Eu não vou digitar comando nenhum.
+- Quando eu precisar fazer alguma coisa fora daqui (clicar em algo num site,
+  copiar uma chave), me diga exatamente onde clicar e espere eu confirmar
+  que fiz.
 - Se der erro, explique em português o que aconteceu antes de corrigir.
-- Não crie nem edite arquivo nenhum sem me avisar antes.
+- Não apague nem mude nada que já existe no meu computador.
 
 O QUE VAMOS FAZER, NESTA ORDEM:
-1. Clonar https://github.com/Divos-da-IA/area-de-membros.git aqui nesta pasta
-   e instalar as dependências
-2. Você me explica o que veio dentro, em 5 linhas
-3. Me guiar na criação do projeto no Supabase e em rodar as 4 migrations da
-   pasta supabase/migrations, na ordem
-4. Configurar o arquivo .env.local com as minhas chaves
-5. Rodar o projeto e abrir no navegador
-6. Me guiar na criação da minha conta de administradora
+
+1. Baixe para esta pasta o projeto que está em
+   https://github.com/Divos-da-IA/area-de-membros
+   e deixe ele pronto para rodar, instalando o que ele precisar. Se der
+   algum erro de instalação, resolva sozinho e me conte o que você fez.
+
+2. Me explique, em 5 linhas, o que veio dentro dessa pasta.
+
+3. Me guie para criar o meu banco de dados no Supabase:
+   - onde eu clico para criar o projeto
+   - como eu rodo, na ordem certa, os quatro arquivos que estão na pasta
+     supabase/migrations
+   - me lembre de desligar a confirmação de e-mail
+
+4. Me diga quais chaves eu preciso copiar e onde exatamente elas ficam.
+   Depois coloque essas chaves no lugar certo do projeto para mim.
+
+5. Rode o projeto e me diga qual endereço eu abro no navegador.
+
+6. Me guie para criar a minha conta de administradora, e escreva para mim
+   o comando que eu preciso colar no Supabase.
 
 Comece pelo passo 1 e pare quando terminar.
 ```
