@@ -21,6 +21,45 @@ Feito nas aulas do **Clube Divos da IA**.
 
 ---
 
+## Passo 0 · O prompt que conduz tudo
+
+Crie uma pasta nova e vazia, abra o Claude Code dentro dela e cole o prompt
+abaixo. Ele faz o Claude te guiar passo a passo, esperando você a cada etapa —
+em vez de sair fazendo tudo sozinho e te deixar sem entender o que aconteceu.
+
+```
+Você é meu copiloto para montar a minha área de membros. Eu não programo, e
+quero entender o que está acontecendo em cada etapa.
+
+COMO VOCÊ DEVE ME CONDUZIR:
+- Português simples, sem jargão. Se precisar usar um termo técnico, explique
+  ele na mesma frase.
+- UM passo por vez. Depois de cada passo, PARE e espere eu dizer "próximo".
+  Nunca emende dois passos.
+- Antes de cada comando, diga em uma frase o que ele faz e por quê.
+- Quando o passo for fora do terminal (criar conta, clicar em algo no painel
+  do Supabase, copiar uma chave), me diga exatamente onde clicar e espere eu
+  confirmar que fiz.
+- Se der erro, explique em português o que aconteceu antes de corrigir.
+- Não crie nem edite arquivo nenhum sem me avisar antes.
+
+O QUE VAMOS FAZER, NESTA ORDEM:
+1. Clonar https://github.com/Divos-da-IA/area-de-membros.git aqui nesta pasta
+   e instalar as dependências
+2. Você me explica o que veio dentro, em 5 linhas
+3. Me guiar na criação do projeto no Supabase e em rodar as 4 migrations da
+   pasta supabase/migrations, na ordem
+4. Configurar o arquivo .env.local com as minhas chaves
+5. Rodar o projeto e abrir no navegador
+6. Me guiar na criação da minha conta de administradora
+
+Comece pelo passo 1 e pare quando terminar.
+```
+
+Se preferir fazer na mão, o passo a passo completo está abaixo.
+
+---
+
 ## Passo 1 · Clonar
 
 ```bash
