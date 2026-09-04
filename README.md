@@ -55,7 +55,7 @@ O QUE VAMOS FAZER, NESTA ORDEM:
 
 3. Me guie para criar o meu banco de dados no Supabase:
    - onde eu clico para criar o projeto
-   - como eu rodo, na ordem certa, os quatro arquivos que estão na pasta
+   - como eu rodo, na ordem certa, os cinco arquivos que estão na pasta
      supabase/migrations
    - me lembre de desligar a confirmação de e-mail
 
@@ -91,7 +91,7 @@ Se o `npm install` reclamar de dependências, use:
 
 1. Crie uma conta em [supabase.com](https://supabase.com) e um projeto novo.
    Guarde a senha do banco.
-2. Abra o **SQL Editor** e rode os quatro arquivos de `supabase/migrations/`,
+2. Abra o **SQL Editor** e rode os cinco arquivos de `supabase/migrations/`,
    **nesta ordem**. Cole o conteúdo de um, clique em Run, e vá para o próximo:
 
    | Arquivo | O que faz |
@@ -179,6 +179,13 @@ link de onde a sua aula estiver:
 | **Vimeo** | O link do vídeo | Depende das permissões que você configurar lá |
 | **Google Drive** | O link de compartilhar | **Nenhuma**, e o arquivo precisa estar como "qualquer pessoa com o link" |
 | **Loom** | O link de compartilhar | **Nenhuma** |
+
+**A capa da aula** fica no mesmo formulário, logo abaixo do vídeo. Você sobe
+um PNG ou JPG do seu computador (até 4 MB, 16:9 — 1280×720 vai bem) e vê a
+prévia antes de salvar. Ela aparece no card da aluna e também na página da
+aula, na frente do player: enquanto ninguém clica, é a sua capa que está ali,
+não o quadro que a hospedagem escolheu. Quando o vídeo vem do Panda, esse
+campo já vem preenchido com a capa de lá — subir a sua por cima é opcional.
 
 Você cola o endereço que copiou da barra do navegador e o painel faz o
 resto: identifica de onde é, converte para o formato que o player entende,
@@ -313,7 +320,7 @@ fora a que você quer esconder. É o que a `004` faz com `video_url` e o que a
 ## Mapa dos arquivos
 
 ```
-supabase/migrations/     as quatro migrations, na ordem
+supabase/migrations/     as cinco migrations, na ordem
 lib/auth.ts              ← o coração: descobre o papel e roteia
 lib/api.ts               porteiro das rotas do painel
 middleware.ts            rede de segurança (não é a trava principal)

@@ -6,6 +6,7 @@ import { Plus, Trash2, Pencil, Eye, EyeOff } from 'lucide-react';
 import { duracao } from '@/lib/formato';
 import { CampoVideo } from './CampoVideo';
 import type { Aula, Modulo } from '@/lib/tipos';
+import { CampoCapa } from '@/components/admin/CampoCapa';
 
 const vazia = {
   titulo: '',
@@ -249,15 +250,7 @@ function Formulario({
           }))
         }
       />
-      <div>
-        <label className="etiqueta mb-1.5 block">Imagem de capa</label>
-        <input
-          className="campo"
-          placeholder="opcional — o Panda preenche sozinho; nas outras fontes, cole o link de uma imagem"
-          value={f.thumbnail_url}
-          onChange={(e) => set('thumbnail_url', e.target.value)}
-        />
-      </div>
+      <CampoCapa valor={f.thumbnail_url} aoMudar={(v) => set('thumbnail_url', v)} />
       <div className="grid gap-3 sm:grid-cols-3">
         <div>
           <label className="etiqueta mb-1.5 block">Duração (min)</label>

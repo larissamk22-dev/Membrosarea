@@ -6,6 +6,7 @@ import { exigirAluna } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { Topbar } from '@/components/Topbar';
 import { BotaoConcluir } from '@/components/BotaoConcluir';
+import { PlayerAula } from '@/components/PlayerAula';
 import { duracao } from '@/lib/formato';
 import { normalizarVideo } from '@/lib/video';
 import { COLUNAS_AULA, type Aula } from '@/lib/tipos';
@@ -50,7 +51,8 @@ export default async function AulaPage({ params }: { params: { id: string } }) {
   //    com vídeo de qualquer fonte — se alguém salvou o endereço da página
   //    do YouTube em vez do link de incorporar, converte aqui.
   const bruto = await linkDoVideo(aula.id);
-  const video = bruto ? normalizarVideo(bruto).embed : null;
+  const normalizado = bruto ? normalizarVideo(bruto) : null;
+  const video = normalizado?.embed || null;
 
   // Aulas vizinhas, para o "anterior / próxima"
   const { data: irmas } = await supabase
@@ -79,22 +81,22 @@ export default async function AulaPage({ params }: { params: { id: string } }) {
           <ArrowLeft className="h-3.5 w-3.5" /> todas as aulas
         </Link>
 
-        {/* O player */}
-        <div className="mt-5 overflow-hidden rounded-2xl bg-black" style={{ aspectRatio: '16 / 9' }}>
-          {video ? (
-            <iframe
-              src={video}
-              title={aula.titulo}
-              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
-              allowFullScreen
-              className="h-full w-full border-0"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center px-6 text-center text-sm text-suave">
-              Esta aula ainda não tem gravação publicada.
-            </div>
-          )}
-        </div>
+        {/* O player, com a capa da aula na frente enquanto ninguém clica */}
+        {video ? (
+          <PlayerAula
+            embed={video}
+            fonte={normalizado!.fonte}
+            capa={aula.thumbnail_url}
+            titulo={aula.titulo}
+          />
+        ) : (
+          <div
+            className="mt-5 flex items-center justify-center overflow-hidden rounded-2xl bg-black px-6 text-center text-sm text-suave"
+            style={{ aspectRatio: '16 / 9' }}
+          >
+            Esta aula ainda não tem gravação publicada.
+          </div>
+        )}
 
         <div className="mt-6 flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
