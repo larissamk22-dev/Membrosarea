@@ -34,6 +34,32 @@ grant select (
   created_at
 ) on public.aulas to authenticated;
 
+-- E o mesmo para o papel anon, que é o visitante deslogado.
+--
+-- Hoje isso não muda nada: o anon não tem policy nenhuma nesta tabela, então
+-- a RLS já devolve zero linha para ele. É defesa em profundidade, para o dia
+-- em que você criar uma "aula de degustação" aberta ao público — nesse dia a
+-- ficha da aula abre, e o link do vídeo continua fechado. Sem isto, ele iria
+-- junto sem ninguém perceber.
+revoke select on public.aulas from anon;
+
+grant select (
+  id,
+  modulo_id,
+  titulo,
+  descricao,
+  thumbnail_url,
+  duracao_segundos,
+  ordem,
+  liberado,
+  libera_em,
+  created_at
+) on public.aulas to anon;
+
 -- Conferindo: esta consulta tem que dar ERRO de permissão quando rodada
 -- como aluna, e funcionar quando rodada aqui no SQL Editor.
 --   select video_url from aulas limit 1;
+--
+-- E esta tem que responder false, false:
+--   select has_column_privilege('authenticated','public.aulas','video_url','SELECT'),
+--          has_column_privilege('anon','public.aulas','video_url','SELECT');
