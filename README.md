@@ -18,6 +18,10 @@ Feito nas aulas do **Clube Divos da IA**.
 - Liberação em etapas: cada aluna avança no ritmo dela.
 - Painel para cadastrar aluna e publicar aula, escolhendo o vídeo direto da
   sua biblioteca do Panda.
+- **Capa da aula com a sua arte**: você sobe um PNG ou JPG e ele aparece no
+  card e na frente do player, no lugar do quadro que a hospedagem escolheu.
+- Matrícula por **link de acesso**: a aluna cria a própria senha, e você nunca
+  digita senha por ninguém.
 
 ---
 
@@ -100,6 +104,7 @@ Se o `npm install` reclamar de dependências, use:
    | `002_rls.sql` | Liga as travas de segurança |
    | `003_conteudo_exemplo.sql` | Põe 3 módulos e 8 aulas de exemplo, para a tela não nascer vazia |
    | `004_link_do_video.sql` | Esconde o link do vídeo do navegador |
+   | `005_capas.sql` | Cria o lugar onde ficam as capas que você sobe |
 
 3. Vá em **Authentication → Providers** e deixe ligado só e-mail e senha.
 4. Ainda em Authentication, **desligue "Confirm email"** enquanto estiver
@@ -153,8 +158,10 @@ Abra `localhost:3000`. Você vai cair no login, e ainda não tem conta.
 Não existe tela para isso, e é **de propósito**: se existisse um botão
 "virar administradora", qualquer pessoa apertaria.
 
-1. Supabase → **Authentication → Users → Add user**. Use o seu e-mail e uma
-   senha.
+1. Supabase → **Authentication → Users → Add user → Create new user**. Use o
+   seu e-mail e uma senha, e **ligue "Auto Confirm User"**. Sem essa chavinha,
+   o Supabase espera você clicar num link de confirmação que talvez nem
+   chegue — e você fica trancada para fora do seu próprio sistema.
 2. Copie o **UID** que aparece na lista.
 3. No SQL Editor:
 
@@ -208,16 +215,26 @@ vendendo, migre para o Panda — o campo é o mesmo, você só troca o link.
 O sistema funciona sem isso: você pode colar o link de qualquer player no
 campo do vídeo. Mas conectando, fica bem melhor.
 
-1. No Panda, vá nas configurações de API e gere um **token**.
-2. Coloque em `PANDA_VIDEO_TOKEN` no `.env.local` e reinicie o `npm run dev`.
+1. No Panda: menu lateral → **Configurações → Avançado → "Gerar nova chave
+   API"**. Copie a chave que aparecer.
+
+   > ⚠️ **A armadilha:** essa tela tem outras chaves, e elas se parecem. A
+   > chave de API é longa (~70 caracteres) e começa com `panda-`. Se você
+   > copiar uma sequência de 64 caracteres só com números e letras de a-f, é
+   > outra coisa — o Panda vai responder `401 Unauthorized` e a lista virá
+   > vazia.
+
+2. Coloque em `PANDA_VIDEO_TOKEN` no `.env.local`. Em desenvolvimento o Next
+   relê esse arquivo sozinho; **no site publicado**, a variável precisa ser
+   cadastrada no painel da Vercel e o projeto republicado.
 3. No painel, ao criar uma aula, clique em **"escolher da minha biblioteca do
    Panda"**: o sistema lista seus vídeos e preenche o link do player, a capa e
    a duração sozinho.
 
 ### Por que isso importa mais do que parece
 
-O link do player **não** se monta a partir do id do vídeo. O Panda usa outro
-identificador (`video_external_id`) no endereço do player. Quem tenta deduzir
+O link do player **não** se monta a partir do id do vídeo. O Panda entrega o
+endereço pronto num campo separado (`video_player`). Quem tenta deduzir
 a URL acaba com um botão que não abre nada — e é o erro mais comum de quem
 integra o Panda pela primeira vez.
 
@@ -245,6 +262,12 @@ O link vale por tempo limitado e some depois de usado. Se ela demorar, o botão
 > tem limite baixo por hora e não entrega de forma confiável para quem não é
 > membro do projeto. Para enviar de verdade, é preciso conectar um SMTP seu
 > (Resend, SendGrid, SES) em **Authentication → Emails → SMTP Settings**.
+>
+> Enquanto você não conectar um SMTP, o botão **"esqueci minha senha"** da tela
+> de login também não entrega e-mail nenhum. A aluna vê a mensagem de "link a
+> caminho" e nada chega. Por isso a tela orienta ela a pedir um link novo para
+> você — e por isso existe o botão **link de acesso** no seu painel. Se a sua
+> turma for grande, conectar o SMTP deixa de ser opcional.
 
 Abra uma **janela anônima** para ver a área dela sem perder o seu login.
 
@@ -281,11 +304,33 @@ Ou peça ao Claude Code:
 
 1. Suba para o **seu** GitHub (o Claude Code faz o commit e cria o repositório).
 2. Importe no [Vercel](https://vercel.com).
-3. **Antes do primeiro build**, cadastre as variáveis de ambiente no painel do
+
+   > Se o seu repositório estiver dentro de uma **organização** do GitHub, a
+   > Vercel pode não conseguir se conectar a ele. Nesse caso publique pela
+   > linha de comando: `npx vercel link` e depois `npx vercel --prod`. Funciona
+   > igual; o que muda é que cada publicação é um comando em vez de um
+   > `git push`.
+
+3. **Antes do primeiro build**, cadastre as variáveis de ambiente no painel da
    Vercel, uma por uma. O `.env.local` não sobe junto — é aqui que quase todo
    mundo quebra na primeira vez.
-4. No Supabase, em **Authentication → URL Configuration**, coloque o domínio do
-   Vercel. Sem isso, o e-mail de senha manda sua aluna para `localhost`.
+
+4. **Desligue a "Vercel Authentication".** Este é o passo que ninguém espera:
+   projeto novo na Vercel nasce com uma proteção que só deixa entrar quem
+   estiver logado na **sua** conta da Vercel. Sua aluna clica no link e cai na
+   tela de login da *Vercel*, não na sua.
+
+   Vá em **Settings → Deployment Protection**, mude **Vercel Authentication**
+   para **Disabled** e salve.
+
+   Isso não abre o seu conteúdo: quem protege as aulas é o login do próprio
+   sistema, com a RLS do banco atrás. A parede da Vercel serve para site
+   interno de time, não para área de membros.
+
+5. No Supabase, em **Authentication → URL Configuration**, coloque o domínio da
+   Vercel em **Site URL**, e adicione `https://seu-dominio.vercel.app/**` em
+   **Redirect URLs**. Sem isso, o link de acesso da aluna perde o caminho e ela
+   cai na raiz do site em vez da tela de criar senha.
 
 ---
 
@@ -341,12 +386,17 @@ lib/api.ts               porteiro das rotas do painel
 middleware.ts            rede de segurança (não é a trava principal)
 
 app/login/               a tela de entrada, única para todo mundo
+app/definir-senha/       onde a aluna cria a senha dela (lê o link de acesso)
 app/aulas/               a área da aluna: grade com cadeados
 app/aulas/[id]/          o player + "marcar como concluída"
 app/admin/               o painel: aulas e alunas
-app/api/admin/panda/     lista os seus vídeos do Panda
 
-components/Miniatura     a capa da aula (gera uma quando não há imagem)
+app/api/admin/panda/     lista os seus vídeos do Panda
+app/api/admin/capa/      recebe a imagem de capa que você sobe
+app/api/admin/convite/   gera um link de acesso novo para uma aluna
+
+components/PlayerAula    a capa na frente do vídeo, até alguém clicar
+components/Miniatura     a capa da aula (desenha uma quando não há imagem)
 components/CardAula      os três estados: disponível, concluída, travada
 app/globals.css          ← a sua marca mora nas primeiras 15 linhas
 ```
@@ -361,10 +411,16 @@ app/globals.css          ← a sua marca mora nas primeiras 15 linhas
       Editor e espere `false, false`:
       `select has_column_privilege('authenticated','public.alunas','modulo_atual','UPDATE'),
               has_column_privilege('authenticated','public.alunas','status','UPDATE');`
+- [ ] O link do vídeo está fora do alcance do navegador, **nos dois papéis**.
+      Rode e espere `false, false`:
+      `select has_column_privilege('authenticated','public.aulas','video_url','SELECT'),
+              has_column_privilege('anon','public.aulas','video_url','SELECT');`
 - [ ] A `service_role` não aparece em nenhum arquivo com `'use client'`
 - [ ] Logada como aluna, tentar abrir `/admin/aulas` na barra de endereço → barra
 - [ ] Deslogada, tentar abrir `/aulas` → cai no login
-- [ ] O domínio de produção configurado no Supabase
+- [ ] O domínio de produção configurado no Supabase (Site URL + Redirect URLs)
+- [ ] A **Vercel Authentication desligada** — abra o site numa janela anônima
+      e confirme que você vê a sua tela de login, não a da Vercel
 
 Ou peça a auditoria ao Claude Code:
 

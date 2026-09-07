@@ -96,9 +96,15 @@ function Formulario() {
           </p>
 
           {enviado ? (
-            <div className="cartao mt-7 p-4 text-sm text-suave">
-              Pronto. Se existir uma conta com esse e-mail, o link já está a caminho. Confira
-              também a caixa de spam.
+            <div className="cartao mt-7 space-y-2 p-4 text-sm text-suave">
+              <p>
+                Pronto. Se existir uma conta com esse e-mail, o link já está a caminho. Confira
+                também a caixa de spam.
+              </p>
+              <p className="text-xs" style={{ color: 'var(--texto-fraco)' }}>
+                Não chegou nada em alguns minutos? Peça um link de acesso novo para quem te
+                matriculou — é mais rápido que esperar.
+              </p>
             </div>
           ) : (
             <form onSubmit={recuperar ? enviarLink : entrar} className="mt-7 space-y-3">
