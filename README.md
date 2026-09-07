@@ -51,7 +51,7 @@ COMO VOCÊ DEVE ME CONDUZIR:
 O QUE VAMOS FAZER, NESTA ORDEM:
 
 1. Baixe para esta pasta o projeto que está em
-   https://github.com/amandadinizmkt/area-de-membros
+   https://github.com/Amandardiniz/area-de-membros
    e deixe ele pronto para rodar, instalando o que ele precisar. Se der
    algum erro de instalação, resolva sozinho e me conte o que você fez.
 
@@ -81,7 +81,7 @@ Se preferir fazer na mão, o passo a passo completo está abaixo.
 ## Passo 1 · Clonar
 
 ```bash
-git clone https://github.com/amandadinizmkt/area-de-membros.git minha-area
+git clone https://github.com/Amandardiniz/area-de-membros.git minha-area
 cd minha-area
 npm install
 ```
