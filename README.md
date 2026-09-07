@@ -228,8 +228,23 @@ simplesmente não acontece.
 
 ## Passo 7 · Cadastrar uma aluna
 
-No painel, aba **Alunas → nova aluna**. Ela recebe um e-mail para criar a
-própria senha — você nunca digita senha por ela.
+No painel, aba **Alunas → nova aluna**. Ao salvar, aparece na tela um **link
+de acesso**: é com ele que ela cria a própria senha e entra. Copie e mande por
+onde a sua aluna de fato lê — na prática, WhatsApp. Tem um botão de "copiar
+mensagem pronta" que já monta o texto do convite.
+
+Você nunca digita senha por ninguém, e isso é de propósito: ninguém pode dizer
+depois que você sabia a senha dela.
+
+O link vale por tempo limitado e some depois de usado. Se ela demorar, o botão
+**link de acesso**, ao lado do nome dela na lista, gera outro.
+
+> **Por que link e não e-mail automático?** A função do Supabase que gera esse
+> link (`generateLink`) devolve o link para quem chamou — ela não dispara
+> e-mail. E o servidor de e-mail que vem junto com o Supabase é só para teste:
+> tem limite baixo por hora e não entrega de forma confiável para quem não é
+> membro do projeto. Para enviar de verdade, é preciso conectar um SMTP seu
+> (Resend, SendGrid, SES) em **Authentication → Emails → SMTP Settings**.
 
 Abra uma **janela anônima** para ver a área dela sem perder o seu login.
 

@@ -7,7 +7,9 @@ import { NextResponse, type NextRequest } from 'next/server';
 // middleware faz duas coisas: renova a sessão a cada visita, e garante que
 // uma página nova que você criar amanhã e esquecer de proteger não nasça
 // aberta para a internet.
-const PUBLICO = ['/login', '/api/auth'];
+// /definir-senha entra aqui porque a aluna chega nela SEM sessão nos cookies:
+// os dados vêm no fragmento do endereço e só existem no navegador dela.
+const PUBLICO = ['/login', '/api/auth', '/definir-senha'];
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request: { headers: request.headers } });

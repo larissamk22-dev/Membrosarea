@@ -47,7 +47,7 @@ function Formulario() {
     setErro(null);
     try {
       const { error } = await createClient().auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/api/auth/callback?proximo=/aulas`,
+        redirectTo: `${window.location.origin}/definir-senha`,
       });
       if (error) {
         setErro('Não consegui enviar o e-mail agora. Tente de novo em instantes.');

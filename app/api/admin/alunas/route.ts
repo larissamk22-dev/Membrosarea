@@ -39,15 +39,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ erro: 'Não consegui salvar a matrícula.' }, { status: 400 });
   }
 
-  // Convite para ela criar a própria senha.
+  // O convite para ela criar a própria senha.
+  //
+  // Atenção ao que generateLink faz e ao que NÃO faz: ele GERA o link e
+  // devolve, sem enviar e-mail nenhum. Quem envia é você. Por isso o link
+  // volta aqui na resposta, para o painel mostrar na tela — daí você manda
+  // por onde a sua aluna realmente lê, que na prática é o WhatsApp.
   const site = process.env.NEXT_PUBLIC_APP_URL ?? request.nextUrl.origin;
-  await servico.auth.admin.generateLink({
+  const { data: convite } = await servico.auth.admin.generateLink({
     type: 'recovery',
     email: limpo,
-    options: { redirectTo: `${site}/api/auth/callback?proximo=/aulas` },
+    options: { redirectTo: `${site}/definir-senha` },
   });
 
-  return NextResponse.json({ aluna });
+  return NextResponse.json({
+    aluna,
+    convite: convite?.properties?.action_link ?? null,
+  });
 }
 
 // Mudar status ou avançar o módulo.

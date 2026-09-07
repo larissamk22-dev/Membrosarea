@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Mail } from 'lucide-react';
+import { Plus, Link2, Loader2 } from 'lucide-react';
 import type { Aluna } from '@/lib/tipos';
+import { LinkDeConvite } from '@/components/admin/LinkDeConvite';
 
 const STATUS: Aluna['status'][] = ['ativa', 'pausada', 'cancelada'];
 
@@ -15,6 +16,8 @@ export function GerenciadorAlunas({ alunasIniciais }: { alunasIniciais: Aluna[] 
   const [email, setEmail] = useState('');
   const [ocupado, setOcupado] = useState(false);
   const [aviso, setAviso] = useState<string | null>(null);
+  const [convite, setConvite] = useState<{ nome: string; link: string } | null>(null);
+  const [gerando, setGerando] = useState<string | null>(null);
 
   async function criar(e: React.FormEvent) {
     e.preventDefault();
@@ -32,10 +35,31 @@ export function GerenciadorAlunas({ alunasIniciais }: { alunasIniciais: Aluna[] 
       return;
     }
     setAlunas((prev) => [json.aluna, ...prev]);
+    if (json.convite) setConvite({ nome, link: json.convite });
+    else setAviso('Cadastrei a aluna, mas não consegui gerar o link. Use o botão "link de acesso" na linha dela.');
     setNome('');
     setEmail('');
     setCriando(false);
     router.refresh();
+  }
+
+  async function gerarConvite(aluna: Aluna) {
+    setGerando(aluna.id);
+    setAviso(null);
+    try {
+      const r = await fetch('/api/admin/convite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: aluna.email }),
+      });
+      const json = await r.json();
+      if (!r.ok) throw new Error(json.erro ?? 'Não consegui gerar o link.');
+      setConvite({ nome: aluna.nome, link: json.convite });
+    } catch (e) {
+      setAviso(e instanceof Error ? e.message : 'Não consegui gerar o link.');
+    } finally {
+      setGerando(null);
+    }
   }
 
   async function atualizar(id: string, campos: Partial<Aluna>) {
@@ -60,6 +84,18 @@ export function GerenciadorAlunas({ alunasIniciais }: { alunasIniciais: Aluna[] 
         </button>
       </div>
 
+      {convite && (
+        <div className="mb-5">
+          <LinkDeConvite nome={convite.nome} link={convite.link} />
+          <button
+            onClick={() => setConvite(null)}
+            className="botao-fantasma mt-2 !px-3.5 !py-1.5 !text-xs"
+          >
+            fechar
+          </button>
+        </div>
+      )}
+
       {criando && (
         <form onSubmit={criar} className="cartao mb-5 space-y-3 p-4" style={{ background: 'var(--superficie-2)' }}>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -80,14 +116,20 @@ export function GerenciadorAlunas({ alunasIniciais }: { alunasIniciais: Aluna[] 
           </div>
           {aviso && <p className="text-sm" style={{ color: '#E88B6E' }}>{aviso}</p>}
           <p className="flex items-start gap-2 text-xs" style={{ color: 'var(--texto-fraco)' }}>
-            <Mail className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-            Ela recebe um e-mail para criar a própria senha. Você não define senha por ela — e
-            isso é de propósito.
+            <Link2 className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            Ao cadastrar, aparece aqui um link de acesso para você enviar a ela. É ela quem
+            cria a própria senha — você nunca digita senha por ninguém, e isso é de propósito.
           </p>
           <button type="submit" disabled={ocupado} className="botao !py-2 !text-xs">
-            {ocupado ? 'cadastrando...' : 'cadastrar e enviar convite'}
+            {ocupado ? 'cadastrando...' : 'cadastrar e gerar link'}
           </button>
         </form>
+      )}
+
+      {aviso && !criando && (
+        <p className="mb-3 text-sm" style={{ color: '#E88B6E' }}>
+          {aviso}
+        </p>
       )}
 
       {alunas.length === 0 ? (
@@ -104,6 +146,21 @@ export function GerenciadorAlunas({ alunasIniciais }: { alunasIniciais: Aluna[] 
                   {aluna.email}
                 </p>
               </div>
+
+              <button
+                type="button"
+                onClick={() => gerarConvite(aluna)}
+                disabled={gerando === aluna.id}
+                className="botao-fantasma !px-3 !py-1.5 !text-xs"
+                title="Gerar um link para ela criar a senha e entrar"
+              >
+                {gerando === aluna.id ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Link2 className="h-3.5 w-3.5" />
+                )}
+                link de acesso
+              </button>
 
               <label className="flex items-center gap-2 text-xs text-suave">
                 módulo
